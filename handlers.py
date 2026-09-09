@@ -3,7 +3,7 @@ from PIL import Image
 from pypdf import PdfReader, PdfWriter
 import pymupdf as fitz
 
-# Multiple photos ko ek single PDF me convert karna
+# Multiple photos ko ek PDF me jodna
 def convert_multiple_images_to_pdf(image_paths: list[str], output_path: str) -> str:
     if not image_paths:
         return ""
@@ -18,20 +18,21 @@ def convert_multiple_images_to_pdf(image_paths: list[str], output_path: str) -> 
     first_img.save(output_path, "PDF", save_all=True, append_images=other_images)
     return output_path
 
-# PDF ke sabhi pages ko images banana (Without Poppler)
+# PDF ke sabhi pages ko images banana (Fast, via PyMuPDF)
 def convert_pdf_to_images(input_path: str, output_dir: str) -> list[str]:
     doc = fitz.open(input_path)
     output_files = []
-
+    
     for idx, page in enumerate(doc):
-        pix = page.get_pixmap(dpi=150)  # Clean quality
+        pix = page.get_pixmap(dpi=150)
         page_path = os.path.join(output_dir, f"page_{idx + 1}.jpg")
         pix.save(page_path)
         output_files.append(page_path)
-
+        
     doc.close()
     return output_files
-# PDF ke har page ko alag PDF me todna (Split)
+
+# PDF ke sabhi pages ko alag-alag split karna
 def split_pdf_all_pages(input_path: str, output_dir: str) -> list[str]:
     reader = PdfReader(input_path)
     output_files = []
@@ -44,7 +45,7 @@ def split_pdf_all_pages(input_path: str, output_dir: str) -> list[str]:
         output_files.append(page_path)
     return output_files
 
-# PDF file compress karna
+# PDF compression
 def compress_pdf_file(input_path: str, output_path: str) -> str:
     reader = PdfReader(input_path)
     writer = PdfWriter()
@@ -55,7 +56,7 @@ def compress_pdf_file(input_path: str, output_path: str) -> str:
         writer.write(f)
     return output_path
 
-# Multiple PDF files ko jodkar ek banana (Merge)
+# Multiple PDFs ko ek me jodna (Merge)
 def merge_pdf_files(file_list: list[str], output_path: str) -> str:
     writer = PdfWriter()
     for file in file_list:
@@ -66,7 +67,7 @@ def merge_pdf_files(file_list: list[str], output_path: str) -> str:
         writer.write(f)
     return output_path
 
-# Image ko lagbhag target KB (default 100 KB) tak compress karna
+# Image compression to target size
 def compress_image_to_target_kb(input_path: str, output_path: str, target_kb: int = 100) -> str:
     img = Image.open(input_path).convert("RGB")
     target_bytes = target_kb * 1024
