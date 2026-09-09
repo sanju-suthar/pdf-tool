@@ -12,7 +12,7 @@ from telegram.ext import (
 
 import handlers
 
-TOKEN = "8907056935:AAFPJzdtkZ9sslR9qwndwoVk_SfODVr4qU0"
+TOKEN = os.getenv("BOT_TOKEN", "YOUR_FALLBACK_TOKEN")
 
 TEMP_ROOT = "temp"
 os.makedirs(TEMP_ROOT, exist_ok=True)
