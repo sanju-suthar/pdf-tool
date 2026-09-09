@@ -45,15 +45,12 @@ def split_pdf_all_pages(input_path: str, output_dir: str) -> list[str]:
         output_files.append(page_path)
     return output_files
 
-# PDF compression
+# PyMuPDF (fitz) se fast aur real PDF compression
 def compress_pdf_file(input_path: str, output_path: str) -> str:
-    reader = PdfReader(input_path)
-    writer = PdfWriter()
-    for page in reader.pages:
-        page.compress_content_streams()
-        writer.add_page(page)
-    with open(output_path, "wb") as f:
-        writer.write(f)
+    doc = fitz.open(input_path)
+    # deflate=True aur garbage=4 duplicate fonts/streams ko delete karke file size chhota karta hai
+    doc.save(output_path, garbage=4, deflate=True, clean=True)
+    doc.close()
     return output_path
 
 # Multiple PDFs ko ek me jodna (Merge)
