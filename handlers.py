@@ -1,8 +1,7 @@
 import os
 from PIL import Image
 from pypdf import PdfReader, PdfWriter
-import fitz
-import pymupdf
+import pymupdf as fitz
 
 # Multiple photos ko ek single PDF me convert karna
 def convert_multiple_images_to_pdf(image_paths: list[str], output_path: str) -> str:
